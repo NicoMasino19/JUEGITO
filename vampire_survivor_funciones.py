@@ -14,7 +14,7 @@ pygame.init()
 pygame.mixer.init()
 ancho, alto = 800, 600
 
-# Colores
+# Colores PRIMER COMMIT
 NEGRO = (0, 0, 0)
 BLANCO = (255, 255, 255)
 ROJO = (255, 0, 0)
