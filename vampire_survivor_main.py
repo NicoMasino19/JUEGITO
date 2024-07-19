@@ -3,6 +3,7 @@ import sys
 import random
 import math
 from vampire_survivor_funciones import *
+from database_utils import save_score, get_high_scores
 import os
 
 # Definir constantes de color
@@ -454,6 +455,24 @@ def juego():
             texto_puntuacion = fuente.render(f"Puntuación final: {puntuacion}", True, BLANCO)
             pantalla.blit(texto_game_over, (ancho//2 - texto_game_over.get_width()//2, alto//2 - 50))
             pantalla.blit(texto_puntuacion, (ancho//2 - texto_puntuacion.get_width()//2, alto//2 + 50))
+            
+            # Save score to database
+            player_name = input("Enter your name: ")
+            save_score(player_name, puntuacion, tiempo_actual - tiempo_inicio, factor_dificultad)
+
+            # Display high scores
+            high_scores = get_high_scores()
+            print("High Scores:")
+            if high_scores:
+                for i, (name, score) in enumerate(high_scores, 1):
+                    print(f"{i}. {name}: {score}")
+            else:
+                print("No high scores available or unable to fetch scores.")
+
+            # Wait for a moment before closing
+            pygame.time.wait(5000)
+            ejecutando = False
+            
 
         pygame.display.flip()  # Update the screen
         reloj.tick(60)  # Maintain 60 FPS
