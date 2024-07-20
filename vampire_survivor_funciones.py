@@ -232,3 +232,71 @@ def mostrar_opciones_mejora(pantalla, fuente):
         pygame.display.flip()
     time.sleep(1/2)
     return seleccion
+
+def get_text_input(screen, prompt):
+    font = pygame.font.Font(None, 32)
+    input_box = pygame.Rect(100, 100, 140, 32)
+    color_inactive = pygame.Color('lightskyblue3')
+    color_active = pygame.Color('dodgerblue2')
+    color = color_inactive
+    active = False
+    text = ''
+    done = False
+
+    while not done:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if input_box.collidepoint(event.pos):
+                    active = not active
+                else:
+                    active = False
+                color = color_active if active else color_inactive
+            if event.type == pygame.KEYDOWN:
+                if active:
+                    if event.key == pygame.K_RETURN:
+                        done = True
+                    elif event.key == pygame.K_BACKSPACE:
+                        text = text[:-1]
+                    else:
+                        text += event.unicode
+
+        screen.fill(NEGRO)
+        txt_surface = font.render(text, True, color)
+        width = max(200, txt_surface.get_width()+10)
+        input_box.w = width
+        screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
+        pygame.draw.rect(screen, color, input_box, 2)
+
+        prompt_surface = font.render(prompt, True, BLANCO)
+        screen.blit(prompt_surface, (input_box.x, input_box.y - 30))
+
+        pygame.display.flip()
+
+    return text
+
+
+def display_high_scores(screen, high_scores):
+    font = pygame.font.Font(None, 32)
+    y = 100
+    screen.fill(NEGRO)
+    title = font.render("High Scores", True, BLANCO)
+    screen.blit(title, (ancho//2 - title.get_width()//2, 50))
+
+    for i, (name, score) in enumerate(high_scores, 1):
+        text = font.render(f"{i}. {name}: {score}", True, BLANCO)
+        screen.blit(text, (ancho//2 - text.get_width()//2, y))
+        y += 40
+
+    pygame.display.flip()
+
+    waiting = True
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                waiting = False
